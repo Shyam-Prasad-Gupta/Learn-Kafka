@@ -8,8 +8,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
-import com.sun.corba.se.impl.orbutil.threadpool.TimeoutException;
-
 public class KafkaProducerTestSynchronous {
 
 	public static void main(String[] args) throws Exception {
