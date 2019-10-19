@@ -5,16 +5,16 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 
 public class MyKafkaProducerCallback implements Callback {
 
-	public void onCompletion(RecordMetadata metadata, Exception exception) {
+	public void onCompletion(RecordMetadata rmd, Exception exception) {
 		/*try {
 			(new Thread()).currentThread().sleep(1000);
 		}catch(Exception ex) {
 			ex.printStackTrace();
 		}*/
-		if(exception != null) {
-			System.out.println("Asynchronous Producer failed with an exception");
+		if(exception == null) {
+			System.out.println("Message is sent to partition no: " + rmd.partition() + " and offset: " + rmd.offset());
 		}else {
-			System.out.println("Asynchronous producer succeeded.");
+			System.out.println("Asynchronous producer failed.");
 		}
 	}
 }
