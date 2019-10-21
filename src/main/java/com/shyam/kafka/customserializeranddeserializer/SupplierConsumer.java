@@ -11,7 +11,7 @@ public class SupplierConsumer {
 	
 	public static void main(String args[]) {
 		
-		String topicName = "tesTis";
+		String topicName = "tesTest";
 		String topicGroupName = "supplierGroup";
 		
 		Properties props = new Properties();

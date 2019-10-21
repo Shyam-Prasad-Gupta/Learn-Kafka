@@ -1,4 +1,4 @@
-package com.shyam.kafka.producernext;
+package com.shyam.kafka.custompartitioner;
 
 import java.util.Properties;
 
@@ -10,7 +10,7 @@ public class KafkaProducerWithCustomPartitioner {
 
 	public static void main(String[] args) throws Exception {
 
-		String topicName = "tesTis";
+		String topicName = "tesTest";
 
 		Properties props = new Properties();
 		props.put("bootstrap.servers", "localhost:9092,localhost:9093");

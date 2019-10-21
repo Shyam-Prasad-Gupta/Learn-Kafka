@@ -14,7 +14,7 @@ public class KafkaProducerToTestCustomSerialization {
 
 	public static void main(String args[]) {
 
-		String topicName = "tesTis";
+		String topicName = "tesTest";
 
 		Properties props = new Properties();
 		props.put("bootstrap.servers", "localhost:9092");
