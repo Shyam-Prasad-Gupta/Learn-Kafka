@@ -8,6 +8,9 @@ public class Supplier {
 	private String supplierName;
 	private Date supplierStartDate;
 
+	public Supplier() {
+	}
+
 	public Supplier(int id, String name, Date supplierDate) {
 		this.supplierId = id;
 		this.supplierName = name;
