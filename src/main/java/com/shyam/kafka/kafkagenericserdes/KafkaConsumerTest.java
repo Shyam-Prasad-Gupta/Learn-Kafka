@@ -19,7 +19,7 @@ public class KafkaConsumerTest {
 		props.setProperty("bootstrap.servers", "localhost:9092");
 		props.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.setProperty("value.deserializer", "com.shyam.kafka.kafkagenericserdes.SupplierGenericDeserializer");
-		props.setProperty("group.id", topicGroupName);
+//		props.setProperty("group.id", topicGroupName);
 		
 		KafkaConsumer<String, Supplier> consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Arrays.asList(topics));
