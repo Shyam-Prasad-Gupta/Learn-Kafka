@@ -27,8 +27,10 @@ hs_err_pid*
 *.classpath
 *.settings
 /target/*
+target/*
 /classes/*
 *.MF
 *.DS_Store
 
 
+/target/
