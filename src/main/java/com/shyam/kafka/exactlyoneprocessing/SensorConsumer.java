@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Properties;
@@ -16,12 +17,12 @@ import org.apache.kafka.common.TopicPartition;
 public class SensorConsumer {
 
 	public static void main(String[] args) throws Exception {
-		String topicName = "tesTis";
+		String topicName = "SensorTopic1";
 		KafkaConsumer<String, String> consumer = null;
 		int rCount;
 
 		Properties props = new Properties();
-		props.put("bootstrap.servers", "localhost:9092,localhost:9093");
+		props.put("bootstrap.servers", "localhost:9094,localhost:9093");
 		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put("enable.auto.commit", "false");
@@ -32,13 +33,16 @@ public class SensorConsumer {
 		TopicPartition p2 = new TopicPartition(topicName, 2);
 
 		consumer.assign(Arrays.asList(p0, p1, p2));
-		System.out.println("Current position p0=" + consumer.position(p0) + " p1=" + consumer.position(p1) + " p2="
+		try{System.out.println("Current position p0=" + consumer.position(p0) + " p1=" + consumer.position(p1) + " p2="
 				+ consumer.position(p2));
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}
 
 		consumer.seek(p0, getOffsetFromDB(p0));
 		consumer.seek(p1, getOffsetFromDB(p1));
 		consumer.seek(p2, getOffsetFromDB(p2));
-		System.out.println("New positions po=" + consumer.position(p0) + " p1=" + consumer.position(p1) + " p2="
+		System.out.println("New positions p0=" + consumer.position(p0) + " p1=" + consumer.position(p1) + " p2="
 				+ consumer.position(p2));
 
 		System.out.println("Start Fetching Now");
@@ -60,21 +64,29 @@ public class SensorConsumer {
 
 	private static long getOffsetFromDB(TopicPartition p) {
 		long offset = 0;
+		Statement stmt = null;
+		Connection con = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/learn", "root",
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/kafkatest", "root",
 					"shyam@MYSQL@100");
 
-			String sql = "select offset from tss_offsets where topic_name='" + p.topic() + "' and partition="
+			String sql = "select offset from tss_offsets where topic_name='" + p.topic() + "' and `partition`="
 					+ p.partition();
-			Statement stmt = con.createStatement();
+			stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			if (rs.next())
 				offset = rs.getInt("offset");
-			stmt.close();
-			con.close();
+			
 		} catch (Exception e) {
 			System.out.println("Exception in getOffsetFromDB");
+		}finally {
+			try {
+				stmt.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return offset;
 	}
@@ -84,7 +96,7 @@ public class SensorConsumer {
 				+ r.key() + " Value=" + r.value());
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/learn", "root",
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/kafkatest", "root",
 					"shyam@MYSQL@100");
 			con.setAutoCommit(false);
 
@@ -93,7 +105,7 @@ public class SensorConsumer {
 			psInsert.setString(1, r.key());
 			psInsert.setString(2, r.value());
 
-			String updateSQL = "update tss_offsets set offset=? where topic_name=? and partition=?";
+			String updateSQL = "update tss_offsets set offset=? where topic_name=? and `partition`=?";
 			PreparedStatement psUpdate = con.prepareStatement(updateSQL);
 			psUpdate.setLong(1, r.offset() + 1);
 			psUpdate.setString(2, r.topic());

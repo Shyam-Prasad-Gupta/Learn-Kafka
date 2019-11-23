@@ -11,12 +11,12 @@ public class KafkaProducerTestFireAndForget {
   
    public static void main(String[] args) throws Exception{
            
-      String topicName = "MySecondTopic";
+      String topicName = "SensorTopic1";
 	  String key = "Key1";
 	  String value = "Hum do hamare:- ";
       
       Properties props = new Properties();
-      props.put("bootstrap.servers", "localhost:9092");
+      props.put("bootstrap.servers", "localhost:9094,localhost:9093");
       props.put("key.serializer","org.apache.kafka.common.serialization.StringSerializer");         
       props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 	        
@@ -25,9 +25,12 @@ public class KafkaProducerTestFireAndForget {
 	  ProducerRecord<String, String> record = null;//
 	  //Future<RecordMetadata> rmd = producer.send(record);
       try {
-    	  for(int i = 0; i < 100; i++) {
-    		  record = new ProducerRecord<String, String>(topicName,key,value + i);
+//    	  for(int i = 0; i < 100; i++) 
+    	  int i = 0;
+    	  while(true){
+    		  record = new ProducerRecord<String, String>(topicName,null,value + i++);
     		  producer.send(record);
+    		  System.out.println("Key: " + record.key() + "\nValue: " + record.value());
     	  }
       }catch(Exception ex) {
     	  ex.printStackTrace();

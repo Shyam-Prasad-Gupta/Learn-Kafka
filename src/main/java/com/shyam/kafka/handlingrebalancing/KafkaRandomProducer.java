@@ -39,7 +39,7 @@ public class KafkaRandomProducer {
 						+ dt.get(Calendar.DATE));
 			}
 		} catch (Exception ex) {
-			System.out.println("Intrupted");
+			System.out.println("Interrupted");
 		} finally {
 			producer.close();
 		}
